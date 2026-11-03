@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPGL Jornadas 2027 - Arrábida e Azeitão</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-header { background: rgba(6, 78, 59, 0.92); backdrop-filter: blur(12px); }
+        .hero-gradient { background: linear-gradient(135deg, #064e3b 0%, #0d9488 50%, #022c22 100%); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .animate-pulse-slow { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-teal-50/20 to-emerald-50/30 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="glass-header text-white shadow-xl sticky top-0 z-50 border-b border-emerald-700/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3.5">
+                <div class="bg-amber-400 p-2 rounded-2xl shadow-lg flex items-center justify-center relative w-12 h-12 overflow-hidden border-2 border-amber-300 ring-4 ring-amber-400/20">
+                    <!-- SVG do autocarro 3D com as letras JP27 na parte laranja -->
+                    <svg viewBox="0 0 100 80" class="w-full h-full drop-shadow-md">
+                        <!-- Corpo Superior (Branco/Cinza claro) -->
+                        <path d="M 10 32 Q 10 20 22 20 L 78 20 Q 90 20 90 32 L 90 44 L 10 44 Z" fill="#f8fafc"/>
+                        <!-- Parabrisas e Janelas Azuis -->
+                        <path d="M 12 24 L 20 24 L 20 40 L 12 40 Z" fill="#38bdf8"/>
+                        <rect x="25" y="24" width="16" height="16" rx="3" fill="#38bdf8"/>
+                        <rect x="44" y="24" width="16" height="16" rx="3" fill="#38bdf8"/>
+                        <rect x="63" y="24" width="16" height="16" rx="3" fill="#38bdf8"/>
+                        <!-- Espelho / Detalhe frente -->
+                        <rect x="15" y="28" width="5" height="8" rx="2" fill="#1e293b"/>
+                        <!-- Corpo Inferior (Laranja) com letras JP27 -->
+                        <path d="M 10 44 L 90 44 Q 90 62 78 62 L 22 62 Q 10 62 10 44 Z" fill="#f97316"/>
+                        <!-- Texto JP27 na parte laranja -->
+                        <text x="50" y="56" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="13" fill="#ffffff" text-anchor="middle">JP27</text>
+                        <!-- Farol dianteiro amarelo -->
+                        <rect x="10" y="47" width="5" height="8" rx="2" fill="#facc15"/>
+                        <!-- Farol traseiro vermelho -->
+                        <rect x="85" y="48" width="4" height="8" rx="2" fill="#e11d48"/>
+                        <!-- Rodas pretas com centro cinza -->
+                        <circle cx="30" cy="66" r="10" fill="#1e293b"/>
+                        <circle cx="30" cy="66" r="4" fill="#cbd5e1"/>
+                        <circle cx="70" cy="66" r="10" fill="#1e293b"/>
+                        <circle cx="70" cy="66" r="4" fill="#cbd5e1"/>
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-[11px] uppercase tracking-widest text-emerald-300 font-extrabold bg-emerald-950/50 px-2 py-0.5 rounded-md border border-emerald-700/40">SPGL • Jornadas 2027</span>
+                    <h1 class="text-lg sm:text-xl font-extrabold tracking-tight mt-0.5 text-white">Arrábida & Azeitão</h1>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-1 sm:space-x-2 mt-3 sm:mt-0 overflow-x-auto py-1">
+                <button onclick="switchTab('programa')" id="btn-programa" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-emerald-800 text-white shadow-lg ring-2 ring-emerald-500/30 flex items-center space-x-2">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <span>Programa</span>
+                </button>
+                <button onclick="switchTab('galeria')" id="btn-galeria" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all text-emerald-100 hover:bg-emerald-800/60 relative flex items-center space-x-2">
+                    <i class="fa-solid fa-camera-retro"></i>
+                    <span>Galeria Coletiva</span>
+                    <span id="badge-count" class="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-md animate-pulse">0</span>
+                </button>
+                <button onclick="switchTab('info')" id="btn-info" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all text-emerald-100 hover:bg-emerald-800/60 flex items-center space-x-2">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <span>Guia & Dicas</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
+
+        <!-- TAB 1: PROGRAMA -->
+        <section id="tab-programa" class="tab-content space-y-8 animate-in fade-in duration-300">
+            <!-- Banner / Hero -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl hero-gradient text-white p-8 sm:p-12 border border-emerald-600/30">
+                <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center space-x-2 bg-amber-400 text-slate-950 text-xs px-3.5 py-1.5 rounded-full font-extrabold mb-4 uppercase tracking-wider shadow-md">
+                        <i class="fa-solid fa-star text-amber-900"></i>
+                        <span>Sábado, 17 de Abril de 2027</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 leading-tight">Saberes e Sabores de uma Região</h2>
+                    <p class="text-emerald-100 text-base sm:text-lg leading-relaxed mb-8 font-light">
+                        Um dia extraordinário de descoberta entre a mística espiritualidade franciscana do Convento da Arrábida e a secular tradição vinícola da Casa-Museu José Maria da Fonseca em Azeitão.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm font-semibold">
+                        <div class="bg-emerald-950/60 backdrop-blur-md px-4 py-3 rounded-2xl border border-emerald-700/50 flex items-center space-x-3 shadow-inner">
+                            <div class="bg-amber-400/20 p-2 rounded-xl text-amber-400"><i class="fa-solid fa-bus text-lg"></i></div>
+                            <div>
+                                <p class="text-[10px] text-emerald-300 uppercase tracking-wider">Partida</p>
+                                <p class="text-white">Sete Rios (Zoo), 08:00</p>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-950/60 backdrop-blur-md px-4 py-3 rounded-2xl border border-emerald-700/50 flex items-center space-x-3 shadow-inner">
+                            <div class="bg-amber-400/20 p-2 rounded-xl text-amber-400"><i class="fa-solid fa-utensils text-lg"></i></div>
+                            <div>
+                                <p class="text-[10px] text-emerald-300 uppercase tracking-wider">Almoço</p>
+                                <p class="text-white">Restaurante Ó Manel</p>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-950/60 backdrop-blur-md px-4 py-3 rounded-2xl border border-emerald-700/50 flex items-center space-x-3 shadow-inner">
+                            <div class="bg-amber-400/20 p-2 rounded-xl text-amber-400"><i class="fa-solid fa-flag-checkered text-lg"></i></div>
+                            <div>
+                                <p class="text-[10px] text-emerald-300 uppercase tracking-wider">Chegada</p>
+                                <p class="text-white">Lisboa, ~20:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline do Itinerário -->
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 sm:p-10">
+                <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center">
+                            <i class="fa-solid fa-route text-emerald-600 mr-3"></i> Itinerário da Viagem
+                        </h3>
+                        <p class="text-sm text-slate-500 mt-1">Conheça o plano detalhado hora a hora para o dia 17 de abril de 2027</p>
+                    </div>
+                </div>
+                
+                <div class="border-l-2 border-emerald-200 ml-3 sm:ml-6 space-y-10 pl-6 sm:pl-10 relative">
+                    
+                    <!-- Passo 1 -->
+                    <div class="relative card-hover bg-slate-50/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+                        <span class="absolute -left-[45px] top-6 bg-emerald-600 text-white w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-extrabold shadow-lg ring-4 ring-white">1</span>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="text-xs font-extrabold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full uppercase tracking-wider">08:00 - 08:15</span>
+                            <span class="text-xs font-semibold text-slate-500"><i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i> Coordenadas: 38.7424° N, 9.1601° W</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mt-1">Encontro e Partida em Lisboa</h4>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">Concentração matinal junto à entrada principal do Jardim Zoológico de Lisboa (Sete Rios). Partida pontual em autocarro turístico rumo à deslumbrante Serra da Arrábida.</p>
+                        <div class="mt-4 pt-4 border-t border-slate-200/60 flex justify-end">
+                            <a href="https://maps.google.com/?q=Jardim+Zoologico+de+Lisboa+Sete+Rios" target="_blank" class="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2 rounded-xl transition">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <span>Ver Localização no Google Maps</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Passo 2 -->
+                    <div class="relative card-hover bg-slate-50/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+                        <span class="absolute -left-[45px] top-6 bg-emerald-600 text-white w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-extrabold shadow-lg ring-4 ring-white">2</span>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="text-xs font-extrabold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full uppercase tracking-wider">10:00</span>
+                            <span class="text-xs font-semibold text-slate-500"><i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i> Coordenadas: 38.4839° N, 8.9892° W</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mt-1">Convento Velho e Convento Novo da Arrábida</h4>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">Visita guiada ao conjunto conventual fundado no século XVI. Explore as celas de eremita escavadas na rocha no cimo da serra (Convento Velho) e a estrutura monástica a meia encosta (Convento Novo), sob a tutela da Fundação Oriente.</p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-lg font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Caminhadas com desníveis</span>
+                            <span class="bg-teal-100 text-teal-800 text-xs px-2.5 py-1 rounded-lg font-semibold"><i class="fa-solid fa-eye mr-1"></i> Estátua com Cadeado</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-200/60 flex justify-end">
+                            <a href="https://maps.google.com/?q=Convento+de+Nossa+Senhora+da+Arrabida" target="_blank" class="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2 rounded-xl transition">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <span>Ver Localização no Google Maps</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Passo 3 -->
+                    <div class="relative card-hover bg-slate-50/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+                        <span class="absolute -left-[45px] top-6 bg-emerald-600 text-white w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-extrabold shadow-lg ring-4 ring-white">3</span>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="text-xs font-extrabold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full uppercase tracking-wider">Almoço</span>
+                            <span class="text-xs font-semibold text-slate-500"><i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i> Região de Setúbal / Arrábida</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mt-1">Almoço no Restaurante Ó Manel</h4>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">Momento de convívio e partilha entre os associados do SPGL, desfrutando da excelente gastronomia tradicional da região.</p>
+                        <div class="mt-4 pt-4 border-t border-slate-200/60 flex justify-end">
+                            <a href="https://maps.google.com/?q=Restaurante+O+Manel+Setubal+Arrabida" target="_blank" class="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2 rounded-xl transition">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <span>Ver Localização no Google Maps</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Passo 4 -->
+                    <div class="relative card-hover bg-slate-50/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+                        <span class="absolute -left-[45px] top-6 bg-emerald-600 text-white w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-extrabold shadow-lg ring-4 ring-white">4</span>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="text-xs font-extrabold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full uppercase tracking-wider">16:30</span>
+                            <span class="text-xs font-semibold text-slate-500"><i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i> Coordenadas: 38.5173° N, 9.0163° W</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mt-1">Casa-Museu José Maria da Fonseca & Prova de Vinhos</h4>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">Visita guiada pelos deslumbrantes jardins, árvore centenária (desde 1834) e pelas históricas adegas (Mata, Teares Novos e Teares Velhos), culminando numa prova do célebre Moscatel de Setúbal em Vila Nogueira de Azeitão.</p>
+                        <div class="mt-4 pt-4 border-t border-slate-200/60 flex justify-end">
+                            <a href="https://maps.google.com/?q=Casa+Museu+Jose+Maria+da+Fonseca+Azeitao" target="_blank" class="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2 rounded-xl transition">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <span>Ver Localização no Google Maps</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Passo 5 -->
+                    <div class="relative card-hover bg-slate-50/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+                        <span class="absolute -left-[45px] top-6 bg-emerald-600 text-white w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-extrabold shadow-lg ring-4 ring-white">5</span>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="text-xs font-extrabold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full uppercase tracking-wider">20:00</span>
+                            <span class="text-xs font-semibold text-slate-500">Regresso a Lisboa</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mt-1">Regresso a Lisboa</h4>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">Chegada prevista a Sete Rios, com encerramento destas inesquecíveis Jornadas Pedagógicas de 2027 do SPGL.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: GALERIA PARTILHADA -->
+        <section id="tab-galeria" class="tab-content hidden space-y-8 animate-in fade-in duration-300">
+            <div class="rounded-3xl shadow-2xl hero-gradient text-white p-8 sm:p-12 flex flex-col lg:flex-row justify-between items-center gap-8 border border-emerald-600/35">
+                <div class="space-y-3 max-w-2xl">
+                    <span class="bg-amber-400 text-slate-950 text-xs px-3.5 py-1.5 rounded-full font-extrabold uppercase tracking-wider shadow-md inline-block">Espaço Coletivo SPGL</span>
+                    <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Galeria Partilhada das Jornadas</h3>
+                    <p class="text-emerald-100 text-sm sm:text-base leading-relaxed font-light">
+                        Esta galeria é de todos! Todas as fotografias tiradas diretamente pela câmara do telemóvel ou carregadas ficam disponíveis instantaneamente para todos os colegas recordarem este dia inesquecível.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3.5 w-full lg:w-auto">
+                    <!-- Botão direto para câmara do telemóvel -->
+                    <label for="camera-capture-input" class="cursor-pointer px-7 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-3 text-sm ring-4 ring-emerald-400/20">
+                        <i class="fa-solid fa-camera text-lg"></i>
+                        <span>Tirar Foto Direta</span>
+                    </label>
+                    <input type="file" id="camera-capture-input" accept="image/*" capture="environment" class="hidden" onchange="handleDirectCapture(event)">
+
+                    <button onclick="openUploadModal()" class="px-7 py-4 bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-3 text-sm ring-4 ring-amber-400/20">
+                        <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                        <span>Carregar Foto</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros da Galeria -->
+            <div class="flex flex-wrap gap-3 items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterPhotos('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-emerald-800 text-white shadow transition">Todas</button>
+                    <button onclick="filterPhotos('Arrábida')" id="filter-Arrábida" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Convento da Arrábida</button>
+                    <button onclick="filterPhotos('Azeitão')" id="filter-Azeitão" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Azeitão & Vinhos</button>
+                    <button onclick="filterPhotos('Almoço')" id="filter-Almoço" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Convívio & Almoço</button>
+                </div>
+                <div class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
+                    <span id="photo-counter" class="text-emerald-700">0</span> fotografias partilhadas
+                </div>
+            </div>
+
+            <!-- Grid de Fotos -->
+            <div id="photo-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Injetado via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 3: GUIA & DICAS -->
+        <section id="tab-info" class="tab-content hidden space-y-8 animate-in fade-in duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Equipamento -->
+                <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-shoe-prints"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Calçado e Vestuário</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed font-light">
+                        Indispensável o uso de calçado confortável, fechado e antiderrapante, adequado a percursos em terreno irregular. Aconselha-se vestuário prático adaptado às condições meteorológicas e levar água consigo.
+                    </p>
+                </div>
+
+                <!-- Card 2: Condições Físicas -->
+                <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-person-hiking"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Recomendação de Mobilidade</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed font-light">
+                        A visita implica caminhadas prolongadas, alguns desníveis e utilização de escadas (sobretudo nos Conventos Velho e Novo). Não é aconselhável a pessoas com dificuldades de locomoção severas.
+                    </p>
+                </div>
+
+                <!-- Card 3: Curiosidades -->
+                <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Destaques Históricos</h3>
+                    <ul class="text-sm text-slate-600 space-y-2.5 font-light">
+                        <li><strong class="text-emerald-800 font-semibold">Estátua com Cadeado:</strong> Frei Martinho na fachada do Convento Novo.</li>
+                        <li><strong class="text-emerald-800 font-semibold">Vinhos Torna-Viagem:</strong> Barricas que cruzavam os oceanos para ganhar complexidade.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Informação Histórica Detalhada & Novas Curiosidades -->
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 sm:p-12 space-y-8">
+                <div class="flex items-center space-x-3 pb-4 border-b border-slate-100">
+                    <div class="bg-emerald-800 text-white p-3 rounded-2xl">
+                        <i class="fa-solid fa-landmark text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-slate-900">Dossier Histórico e Curiosidades da Arrábida e Azeitão</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Património, espiritualidade e tradição vinícola em destaque nas Jornadas 2027</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slate-600 leading-relaxed font-light">
+                    <div class="space-y-4 bg-slate-50/70 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="font-extrabold text-slate-900 text-base flex items-center text-emerald-800"><i class="fa-solid fa-church mr-2"></i> A Fundação Franciscana (1542)</h4>
+                        <p>
+                            O Convento de Nossa Senhora da Arrábida teve origem em 1542, quando D. João de Lencastre, 1.º Duque de Aveiro, cedeu terrenos na vertente da serra a Frei Martinho de Santa Maria, um franciscano castelhano que desejava viver em profundo eremismo. A escolha deste local remoto entre a serra e o mar visava o isolamento absoluto e a comunhão mística com a natureza.
+                        </p>
+                        <h4 class="font-extrabold text-slate-900 text-base flex items-center text-emerald-800 pt-3"><i class="fa-solid fa-mountain mr-2"></i> Do Convento Velho ao Convento Novo</h4>
+                        <p>
+                            No topo da serra ergueu-se o <strong>Convento Velho</strong>, integrando a antiga Ermida da Memória e minúsculas celas escavadas diretamente na rocha. Devido às condições climatéricas e de sobrevivência extremas no cimo da montanha, a comunidade expandiu-se e construiu a meia encosta o <strong>Convento Novo</strong>, composto por igreja, refeitório, biblioteca e celas conventuais.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 bg-slate-50/70 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="font-extrabold text-slate-900 text-base flex items-center text-emerald-800"><i class="fa-solid fa-wine-glass mr-2"></i> A Tradição Vitivinícola de Azeitão (1834)</h4>
+                        <p>
+                            Fundada em 1834, a <strong>Casa-Museu José Maria da Fonseca</strong> em Vila Nogueira de Azeitão é a mais antiga produtora de vinhos de caráter familiar em Portugal. Nela nasceu o célebre vinho <em>Periquita</em>, cuja casta (Castelão) foi plantada na propriedade "Cova da Periquita", e amadurecem os raros Moscatéis de Setúbal nas seculares adegas da Mata, Teares Novos e Teares Velhos.
+                        </p>
+                        <h4 class="font-extrabold text-slate-900 text-base flex items-center text-emerald-800 pt-3"><i class="fa-solid fa-feather mr-2"></i> Lendas e Figuras Ilustres</h4>
+                        <p>
+                            Por estes lugares sagrados passaram figuras de relevo como São Pedro de Alcântara e o poeta franciscano Frei Agostinho da Cruz. Na base da serra, a mítica <em>Lapa de Santa Margarida</em> (gruta com capela interior) alimenta lendas seculares sobre refúgios de marinheiros e túneis subterrâneos que ligariam a costa marinha diretamente ao convento.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações do SPGL -->
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 flex flex-col md:flex-row items-center gap-6">
+                <div class="bg-emerald-900 text-white p-5 rounded-3xl shadow-lg flex-shrink-0">
+                    <i class="fa-solid fa-building-columns text-3xl"></i>
+                </div>
+                <div class="space-y-2 text-center md:text-left">
+                    <h3 class="text-xl font-extrabold text-slate-900">Sindicato dos Professores da Grande Lisboa (SPGL)</h3>
+                    <p class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Jornadas Pedagógicas 2027 • Formação, Cultura e Convívio</p>
+                    <p class="text-sm text-slate-600 leading-relaxed font-light">
+                        Esta aplicação foi desenvolvida exclusivamente para apoiar os sócios participantes na visita cultural de 17 de abril de 2027. Promove a partilha instantânea de memórias fotográficas entre todos os participantes e fornece acesso rápido a informações históricas e logísticas essenciais.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal de Partilha de Foto -->
+    <div id="upload-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-in fade-in zoom-in duration-200 border border-slate-100">
+            <button onclick="closeUploadModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-lg font-bold w-9 h-9 rounded-2xl bg-slate-100 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3 mb-2">
+                <div class="bg-emerald-100 text-emerald-800 p-2.5 rounded-xl">
+                    <i class="fa-solid fa-camera-retro text-lg"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-slate-900">Partilhar Foto</h3>
+            </div>
+            <p class="text-xs text-slate-500 mb-6">A sua fotografia ficará imediatamente visível para todos os colegas do SPGL nesta visita.</p>
+
+            <form id="photo-form" onsubmit="handlePhotoUpload(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">O seu Nome / Colega</label>
+                    <input type="text" id="author-name" required placeholder="Ex: Prof. Maria Santos (Agrupamento X)" class="w-full px-4 py-3 rounded-2xl border border-slate-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-600 text-sm transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">Local da Foto</label>
+                    <select id="photo-category" class="w-full px-4 py-3 rounded-2xl border border-slate-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-600 text-sm bg-white transition">
+                        <option value="Arrábida">Convento da Arrábida</option>
+                        <option value="Azeitão">Casa-Museu J. M. Fonseca (Azeitão)</option>
+                        <option value="Almoço">Almoço & Convívio</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">Selecionar Imagem ou Tirar Foto</label>
+                    <input type="file" id="photo-file" accept="image/*" capture="environment" required class="w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer border border-slate-300 rounded-2xl">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">Legenda / Comentário</label>
+                    <input type="text" id="photo-caption" required placeholder="Ex: Vista maravilhosa sobre a serra!" class="w-full px-4 py-3 rounded-2xl border border-slate-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-600 text-sm transition">
+                </div>
+
+                <div class="pt-3">
+                    <button type="submit" id="submit-btn" class="w-full py-4 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-2xl shadow-xl transition flex items-center justify-center space-x-2 text-sm ring-4 ring-emerald-600/20">
+                        <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                        <span>Publicar na Galeria Coletiva</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 text-sm border border-slate-700">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
+        <span id="toast-msg" class="font-medium">Operação efetuada com sucesso!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-16 border-t border-slate-800 text-xs">
+        <div class="max-w-7xl mx-auto px-6 text-center space-y-2">
+            <p class="font-bold text-slate-200">Sindicato dos Professores da Grande Lisboa (SPGL) • Jornadas Pedagógicas 2027</p>
+            <p class="font-light">Aplicação desenvolvida para suporte à visita cultural à Arrábida e Azeitão.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs & App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'spgl-jornadas-2027-arrabida';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let currentFilter = 'all';
+
+        let samplePhotos = [
+            { id: '1', author: 'Prof. Ana Silva', category: 'Arrábida', caption: 'Convento Novo da Arrábida sob um sol magnífico!', url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80', time: '10:30' },
+            { id: '2', author: 'Prof. Carlos Mendes', category: 'Azeitão', caption: 'Árvore centenária na Casa-Museu José Maria da Fonseca.', url: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80', time: '16:45' },
+            { id: '3', author: 'Prof. Teresa Sousa', category: 'Almoço', caption: 'Excelente ambiente no almoço de convívio do SPGL!', url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80', time: '13:15' }
+        ];
+
+        const localSaved = localStorage.getItem('spgl_user_photos');
+        let userLocalPhotos = localSaved ? JSON.parse(localSaved) : [];
+
+        window.allPhotos = [...samplePhotos, ...userLocalPhotos];
+
+        async function initFirebase() {
+            if (firebaseConfig) {
+                try {
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    await signInAnonymously(auth);
+                    currentUser = auth.currentUser;
+                    
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'shared_photos');
+                    onSnapshot(colRef, (snapshot) => {
+                        const cloudPhotos = [];
+                        snapshot.forEach((doc) => {
+                            cloudPhotos.push({ id: doc.id, ...doc.data() });
+                        });
+                        if (cloudPhotos.length > 0) {
+                            window.allPhotos = [...samplePhotos, ...userLocalPhotos, ...cloudPhotos];
+                        }
+                        renderPhotos();
+                    }, (error) => {
+                        renderPhotos();
+                    });
+                } catch (e) {
+                    renderPhotos();
+                }
+            } else {
+                renderPhotos();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+        });
+
+        window.handlePhotoUpload = async function(e) {
+            e.preventDefault();
+            const author = document.getElementById('author-name').value;
+            const category = document.getElementById('photo-category').value;
+            const caption = document.getElementById('photo-caption').value;
+            const fileInput = document.getElementById('photo-file');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (!fileInput.files || fileInput.files.length === 0) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> A carregar foto...';
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(uploadEvent) {
+                const base64Url = uploadEvent.target.result;
+                const newPhotoData = {
+                    author,
+                    category,
+                    caption,
+                    url: base64Url,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    createdAt: Date.now()
+                };
+
+                try {
+                    if (db && currentUser) {
+                        const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'shared_photos');
+                        await addDoc(colRef, newPhotoData);
+                    }
+                } catch (err) {}
+
+                userLocalPhotos.unshift({ id: 'local-' + Date.now(), ...newPhotoData });
+                localStorage.setItem('spgl_user_photos', JSON.stringify(userLocalPhotos));
+                window.allPhotos = [...samplePhotos, ...userLocalPhotos];
+                
+                renderPhotos();
+                showToast('Fotografia partilhada com sucesso na galeria coletiva!');
+                closeUploadModal();
+                document.getElementById('photo-form').reset();
+
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> Publicar na Galeria Coletiva';
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.handleDirectCapture = function(e) {
+            const fileInput = e.target;
+            if (!fileInput.files || fileInput.files.length === 0) return;
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(uploadEvent) {
+                const base64Url = uploadEvent.target.result;
+                const newPhotoData = {
+                    author: 'Colega SPGL (Telemóvel)',
+                    category: 'Arrábida',
+                    caption: 'Registo fotográfico feito durante a visita de 2027',
+                    url: base64Url,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    createdAt: Date.now()
+                };
+
+                try {
+                    if (db && currentUser) {
+                        const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'shared_photos');
+                        await addDoc(colRef, newPhotoData);
+                    }
+                } catch (err) {}
+
+                userLocalPhotos.unshift({ id: 'local-' + Date.now(), ...newPhotoData });
+                localStorage.setItem('spgl_user_photos', JSON.stringify(userLocalPhotos));
+                window.allPhotos = [...samplePhotos, ...userLocalPhotos];
+                
+                renderPhotos();
+                showToast('Foto tirada e partilhada na galeria coletiva com sucesso!');
+                fileInput.value = '';
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.renderPhotos = function() {
+            const grid = document.getElementById('photo-grid');
+            const counter = document.getElementById('photo-counter');
+            const badge = document.getElementById('badge-count');
+            
+            const filtered = currentFilter === 'all' 
+                ? window.allPhotos 
+                : window.allPhotos.filter(p => p.category === currentFilter);
+
+            counter.textContent = window.allPhotos.length;
+            badge.textContent = window.allPhotos.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200/80 shadow-sm">
+                        <i class="fa-solid fa-camera text-5xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-700 font-bold text-base">Ainda não existem fotos nesta categoria.</p>
+                        <p class="text-xs text-slate-400 mt-1">Seja o primeiro colega a partilhar uma recordação!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-3xl shadow-md border border-slate-200/80 overflow-hidden flex flex-col justify-between card-hover">
+                    <div>
+                        <div class="relative h-52 bg-slate-100 overflow-hidden group">
+                            <img src="${p.url}" alt="${p.caption}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=SPGL+Arrabida'">
+                            <span class="absolute top-3 left-3 bg-slate-950/75 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow">
+                                ${p.category}
+                            </span>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-sm font-bold text-slate-900 line-clamp-2 leading-snug">${p.caption}</p>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5 pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
+                        <span class="font-extrabold text-emerald-800 truncate max-w-[150px]"><i class="fa-solid fa-user-pen mr-1"></i>${p.author}</span>
+                        <span class="font-medium">${p.time || 'Hoje'}</span>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.filterPhotos = function(category) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+            });
+            const activeBtn = document.getElementById(`filter-${category}`);
+            if (activeBtn) {
+                activeBtn.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-emerald-800 text-white shadow transition';
+            }
+            renderPhotos();
+        };
+
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = 'nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all text-emerald-100 hover:bg-emerald-800/60 flex items-center space-x-2';
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`btn-${tabName}`);
+            if (activeNav) {
+                activeNav.className = 'nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-emerald-800 text-white shadow-lg ring-2 ring-emerald-500/30 flex items-center space-x-2';
+            }
+        };
+
+        window.openUploadModal = function() {
+            document.getElementById('upload-modal').classList.remove('hidden');
+        };
+        window.closeUploadModal = function() {
+            document.getElementById('upload-modal').classList.add('hidden');
+        };
+
+        window.showToast = function(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 4000);
+        };
+    </script>
+</body>
+</html>
